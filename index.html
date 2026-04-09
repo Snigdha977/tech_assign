@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stack Intelligence Engine</title>
+
+<style>
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI',sans-serif;
+}
+
+/* BACKGROUND */
+body {
+  background: url('https://wallpapercave.com/wp/wp9223482.jpg') no-repeat center/cover;
+  min-height:100vh;
+  transition:0.4s;
+
+  filter: brightness(1.2) contrast(1.1) saturate(1.1);
+}
+
+/* OVERLAY */
+.overlay {
+  background: linear-gradient(
+    rgba(10,15,30,0.35),
+    rgba(10,15,30,0.25)
+  ); /* gradient instead of flat */
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+body.light .overlay {
+  background: linear-gradient(
+    rgba(255,255,255,0.2),
+    rgba(255,255,255,0.15)
+  );
+}
+
+/* NAVBAR */
+.navbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 40px;
+}
+
+.logo {
+  font-size:26px;
+  font-weight:700;
+  background: linear-gradient(90deg,#38bdf8,#6366f1);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+/* TOGGLE */
+.switch {
+  position:relative;
+  width:60px;
+  height:30px;
+}
+
+.switch input { display:none; }
+
+.slider {
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:#1e293b;
+  border-radius:50px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 6px;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.slider:before {
+  content:"";
+  position:absolute;
+  height:22px;
+  width:22px;
+  left:4px;
+  top:4px;
+  background:white;
+  border-radius:50%;
+  transition:0.3s;
+}
+
+input:checked + .slider:before {
+  transform:translateX(28px);
+}
+
+/* CONTAINER */
+.container {
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+  flex:1;
+}
+
+/* CARD */
+.card {
+  backdrop-filter: blur(18px);
+  background: rgba(255,255,255,0.10);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:20px;
+  padding:35px;
+  margin-top:40px;
+  transform: scale(1.02);
+  box-shadow:0 15px 50px rgba(0,0,0,0.5);
+  animation: fadeInUp 0.6s ease;
+}
+
+body.light .card {
+  background: rgba(255,255,255,0.85);
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* GRID */
+.grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+select, button, input {
+  padding:14px;
+  border-radius:10px;
+  border:none;
+  font-size:14px;
+}
+
+/* BUTTON */
+button {
+  background:linear-gradient(135deg,#38bdf8,#6366f1);
+  color:white;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+button:hover {
+  transform:translateY(-2px) scale(1.01);
+}
+
+button.generate {
+  height:58px;
+  font-size:16px;
+  font-weight:600;
+}
+
+/* OUTPUT */
+.output-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.output-card {
+  padding:15px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.06);
+  transition:0.3s;
+  animation: fadeIn 0.5s ease;
+}
+
+.output-card:hover {
+  transform:translateY(-3px);
+}
+
+body.light .output-card {
+  background:#f1f5f9;
+}
+
+.label { font-size:12px; opacity:0.7; }
+.value { font-weight:bold; margin-top:5px; }
+
+.cost { color:#22c55e; }
+.red { color:#ef4444; }
+.warn { color:#eab308; }
+
+/* FOOTER */
+footer {
+  text-align:center;
+  padding:30px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeInUp {
+  from { opacity:0; transform:translateY(20px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity:0; }
+  to { opacity:1; }
+}
+</style>
+</head>
+
+<body>
+<div class="overlay">
+
+<!-- NAVBAR -->
+<div class="navbar">
+<div class="logo">Stack Intelligence Engine</div>
+
+<label class="switch">
+<input type="checkbox" onchange="toggleMode()">
+<div class="slider">🌙 ☀</div>
+</label>
+</div>
+
+<div class="container">
+
+<!-- FORM -->
+<div class="card grid">
+
+<select id="stage">
+<option value="idea">Idea</option>
+<option value="mvp">MVP</option>
+<option value="growth">Growth</option>
+<option value="scale">Scale</option>
+</select>
+
+<select id="team">
+<option value="1-3">1-3</option>
+<option value="4-10">4-10</option>
+<option value="10+">10+</option>
+</select>
+
+<select id="budget">
+<option value="low">₹0–10k</option>
+<option value="mid">₹10k–50k</option>
+<option value="high">₹50k+</option>
+</select>
+
+<select id="sector">
+<option value="fintech">Fintech</option>
+<option value="health">Healthtech</option>
+<option value="edtech">Edtech</option>
+<option value="saas">SaaS</option>
+<option value="ecommerce">E-commerce</option>
+</select>
+
+<button class="generate" onclick="generate()" style="grid-column:span 2;">
+Generate Recommendation
+</button>
+
+</div>
+
+<div id="output"></div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+<h3>Subscribe</h3>
+<input type="email" id="email" placeholder="Enter email">
+<br><br>
+<button onclick="subscribe()">Subscribe</button>
+<p id="msg"></p>
+</footer>
+
+</div>
+
+
+<script>
+function toggleMode(){
+  document.body.classList.toggle("light");
+}
+
+function subscribe(){
+  let email=document.getElementById("email").value;
+  document.getElementById("msg").innerText =
+    email.includes("@") ? "Subscribed successfully" : "Invalid email";
+}
+
+function generate(){
+  let sector=document.getElementById("sector").value;
+
+  let data={};
+
+  if(sector==="fintech"){
+    data={
+      backend:"Flask",
+      hosting:"AWS EC2",
+      db:"PostgreSQL",
+      integration:"UPI (Razorpay)",
+      docs:"https://razorpay.com/docs/",
+      pricing:"https://razorpay.com/pricing/",
+      observation:"Razorpay enables instant UPI onboarding with compliance-ready APIs",
+      cost:"2% per transaction",
+      reason:"Fintech requires transaction reliability + banking integrations",
+      red:"Compliance + PCI-DSS overhead",
+      contra:"Freshworks scaled monolith early before microservices"
+    };
+  }
+
+  else if(sector==="health"){
+    data={
+      backend:"Flask",
+      hosting:"AWS",
+      db:"PostgreSQL",
+      integration:"ABDM",
+      docs:"https://abdm.gov.in/",
+      pricing:"https://aws.amazon.com/pricing/",
+      observation:"ABDM acts as India's standardized health data exchange layer",
+      cost:"₹3000–8000/month",
+      reason:"Healthtech requires secure + compliant infra",
+      red:"Strict data privacy + integration complexity",
+      contra:"Practo used Django monolith before scaling"
+    };
+  }
+
+  else if(sector==="edtech"){
+    data={
+      backend:"Flask",
+      hosting:"Replit",
+      db:"SQLite",
+      integration:"DigiLocker",
+      docs:"https://www.digilocker.gov.in/",
+      pricing:"https://replit.com/pricing",
+      observation:"DigiLocker APIs allow direct access to verified academic credentials",
+      cost:"₹0–1500/month",
+      reason:"Fast iteration more important than scale initially",
+      red:"Replit not suitable for high concurrency",
+      contra:"Many edtech startups delayed infra scaling to save cost"
+    };
+  }
+
+  else if(sector==="saas"){
+    data={
+      backend:"Flask",
+      hosting:"Railway / Render",
+      db:"PostgreSQL",
+      integration:"GST API",
+      docs:"https://gst.gov.in/",
+      pricing:"https://render.com/pricing",
+      observation:"SaaS in India requires GST-compliant billing systems",
+      cost:"₹1500–4000/month",
+      reason:"Subscription + global access needed",
+      red:"Vendor lock-in risk",
+      contra:"Zoho built infra instead of AWS early"
+    };
+  }
+
+  else if(sector==="ecommerce"){
+    data={
+      backend:"Flask",
+      hosting:"AWS Lightsail",
+      db:"MySQL",
+      integration:"Cashfree (UPI + COD)",
+      docs:"https://docs.cashfree.com/",
+      pricing:"https://www.cashfree.com/pricing/",
+      observation:"Cashfree supports UPI + COD critical for Indian buyers",
+      cost:"1.75% per transaction",
+      reason:"Payments + logistics core to ecommerce",
+      red:"Payment failures reduce conversions",
+      contra:"Some brands scaled via Shopify instead of custom stacks"
+    };
+  }
+
+  document.getElementById("output").innerHTML = `
+  <div class="card output-grid">
+    ${card("Backend", data.backend)}
+    ${card("Hosting", data.hosting)}
+    ${card("Database", data.db)}
+    ${card("Integration", data.integration)}
+    ${linkCard("Docs", data.docs)}
+    ${linkCard("Pricing", data.pricing)}
+    ${card("Observation", data.observation)}
+    ${card("Cost", data.cost, "cost")}
+    ${card("Reason", data.reason)}
+    ${card("Red Flag", data.red, "red")}
+    ${card("Contrarian", data.contra, "warn")}
+  </div>`;
+}
+
+function card(label,value,cls=""){
+  return `<div class="output-card">
+    <div class="label">${label}</div>
+    <div class="value ${cls}">${value}</div>
+  </div>`;
+}
+
+function linkCard(label,link){
+  if(!link) return "";
+  return `<div class="output-card">
+    <div class="label">${label}</div>
+    <div class="value"><a href="${link}" target="_blank">Open</a></div>
+  </div>`;
+}
+</script>
+</body>
+</html>
